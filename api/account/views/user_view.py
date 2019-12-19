@@ -4,15 +4,14 @@ from flask_restful import Resource
 from marshmallow.exceptions import ValidationError
 
 from api.account.models.user_model import UserModel, UserSchema
+from api.authentication.auth_token import BasicAuthToken
 from api.base.views import BaseView
 
-# from ..shared.Authentication import Auth
-
+auth = BasicAuthToken()
 user_schema = UserSchema()
 
 
 class SigInView(BaseView, Resource):
-
     def post(self):
         try:
             data = user_schema.load(request.form)
@@ -26,25 +25,30 @@ class SigInView(BaseView, Resource):
         return self.response(201, True, result)
 
 
-class UserEmailView(BaseView, Resource):
-    def get(self, email):
-        user = UserModel.query.filter_by(email=email).one_or_none()
+class GetMeView(BaseView, Resource):
+    @auth.login_required
+    def get(self):
+        user = auth.user
         if not user:
             return self.not_found()
 
         result = user_schema.dump(user)
         return self.response(200, True, result)
 
-    def delete(self, email):
-        user = UserModel.query.filter_by(email=email).one_or_none()
+
+class UserView(BaseView, Resource):
+    @auth.login_required
+    def delete(self, pk):
+        user = UserModel.query.get(pk).one_or_none()
         if not user:
             return self.not_found()
 
         user.delete()
         return self.response(204, True)
 
-    def put(self, email):
-        user = UserModel.query.filter_by(email=email).one_or_none()
+    @auth.login_required
+    def put(self, pk):
+        user = UserModel.query.query.get(pk).one_or_none()
         if not user:
             return self.not_found()
 

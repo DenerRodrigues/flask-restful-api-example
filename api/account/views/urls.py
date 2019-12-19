@@ -6,4 +6,5 @@ from api.account.views import user_view
 api = Api(app)
 
 api.add_resource(user_view.SigInView, '/sigin/')
-api.add_resource(user_view.UserEmailView, '/user/<email>/')
+api.add_resource(user_view.GetMeView, '/getme/')
+api.add_resource(user_view.UserView, '/user/<pk>/')

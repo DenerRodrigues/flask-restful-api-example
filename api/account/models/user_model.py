@@ -12,7 +12,7 @@ class UserModel(BaseModel, db.Model):
 
     __tablename__ = 'users'
 
-    full_name = db.Column(db.String(128), nullable=False)
+    full_name = db.Column(db.String(128), nullable=True)
     email = db.Column(db.String(128), unique=True, nullable=False)
     password = db.Column(db.String(128), nullable=True)
     address = db.Column(JSON)
@@ -24,6 +24,7 @@ class UserModel(BaseModel, db.Model):
         self.email = kwargs.get('email')
         self.password = kwargs.get('password')
         self.address = kwargs.get('address')
+        self.wishes = kwargs.get('wishes')
         super(UserModel, self).__init__()
 
     def save(self):
@@ -36,10 +37,10 @@ class UserModel(BaseModel, db.Model):
         super(UserModel, self).update(**kwargs)
 
     @staticmethod
-    def __generate_hash(password):
+    def __generate_password_hash(password):
         return bcrypt.generate_password_hash(password, rounds=10).decode('utf-8')
 
-    def check_hash(self, password):
+    def check_password_hash(self, password):
         return bcrypt.check_password_hash(self.password, password)
 
     @property
