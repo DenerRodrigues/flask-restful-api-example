@@ -9,7 +9,9 @@ BASE_URL = app.config.get('BASE_URL')
 
 
 def get_token():
-    auth = HTTPBasicAuth('dl.rodrigues94@gmail.com', '123456')
+    email = input('Enter your e-mail account: ')
+    password = input('Enter your password: ')
+    auth = HTTPBasicAuth(email, password)
     url = '{}/token/'.format(BASE_URL)
     payload = requests.get(url=url, auth=auth)
     payload.raise_for_status()
