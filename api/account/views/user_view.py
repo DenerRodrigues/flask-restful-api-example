@@ -35,11 +35,9 @@ class GetMeView(BaseView, Resource):
         result = user_schema.dump(user)
         return self.response(200, True, result)
 
-
-class UserView(BaseView, Resource):
     @auth.login_required
-    def delete(self, pk):
-        user = UserModel.query.get(pk).one_or_none()
+    def delete(self):
+        user = auth.user
         if not user:
             return self.not_found()
 
@@ -47,8 +45,8 @@ class UserView(BaseView, Resource):
         return self.response(204, True)
 
     @auth.login_required
-    def put(self, pk):
-        user = UserModel.query.query.get(pk).one_or_none()
+    def put(self):
+        user = auth.user
         if not user:
             return self.not_found()
 
