@@ -27,13 +27,19 @@ BASE_URL                | Base URL of Flask Application                 | http:/
 SQLALCHEMY_DATABASE_URI | Database URL                                  | postgres://`user`:`password`@`host`:`5432`/`database`
 AUTH_TOKEN_EXPIRATION   | Authentication Token Expiration Minutes Time  | 600
 
-
-#### Run Tests
+#### Run Migrations
 ```shell
-python manage.py tests
+python manage.py db init
+python manage.py db migrate
+python manage.py db upgrade
 ```
 
 #### Run Application
 ```shell
 python run.py
+```
+
+#### Run Tests
+```shell
+python manage.py tests
 ```
