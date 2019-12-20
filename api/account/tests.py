@@ -1,3 +1,4 @@
+import json
 import requests
 
 from api.app import app
@@ -10,5 +11,11 @@ def get_me():
     url = '{}/me/'.format(BASE_URL)
     payload = requests.get(url=url, headers=get_headers())
     payload.raise_for_status()
-    token = payload.json()
-    return token
+    response = payload.json()
+    result = json.loads(response).get('result')
+
+    print('GET {}/me/'.format(BASE_URL))
+    print('> {}'.format(response))
+    print('')
+
+    return result
