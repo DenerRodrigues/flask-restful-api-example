@@ -25,7 +25,7 @@ FLASK_ENV               | Flask Environment                             | Develo
 FLASK_SECRET_KEY        | Secret Key of Flask Application               | 506da44b-3587-47af-93c5-856b29890111
 BASE_URL                | Base URL of Flask Application                 | http://127.0.0.1:5000
 SQLALCHEMY_DATABASE_URI | Database URL                                  | postgres://`user`:`password`@`host`:`5432`/`database`
-AUTH_TOKEN_EXPIRATION   | Authentication Token Expiration Minutes Time  | 600
+AUTH_TOKEN_EXPIRATION   | Authentication Token Expiration Seconds Time  | 1200
 
 #### Run Migrations
 ```shell
