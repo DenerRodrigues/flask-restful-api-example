@@ -1,6 +1,7 @@
 from flask import request
 
 from flask_restful import Resource
+from flask_restful_swagger import swagger
 from marshmallow.exceptions import ValidationError
 
 from api.stock.models.wish_model import WishModel, WishSchema
@@ -12,6 +13,7 @@ wish_schema = WishSchema()
 
 
 class WishCreateView(BaseView, Resource):
+    @swagger.operation()
     @auth.login_required
     def post(self):
         user = auth.user
@@ -30,12 +32,21 @@ class WishCreateView(BaseView, Resource):
 
 class WishView(BaseView, Resource):
     @auth.login_required
-    def get(self):
+    @swagger.operation(
+        responseClass=WishModel.__name__
+    )
+    def get(self, pk):
         user = auth.user
-        result = wish_schema.dump(user)
+        wish = WishModel.query.filter_by(id=pk, owner_id=user.id, is_active=True)
+        if not wish:
+            return self.not_found()
+        result = wish_schema.dump(wish)
         return self.response(200, True, result)
 
     @auth.login_required
+    @swagger.operation(
+        responseClass=WishModel.__name__
+    )
     def delete(self, pk):
         user = auth.user
         wish = WishModel.query.filter_by(id=pk, owner_id=user.id, is_active=True)
@@ -46,6 +57,9 @@ class WishView(BaseView, Resource):
         return self.response(204, True)
 
     @auth.login_required
+    @swagger.operation(
+        responseClass=WishModel.__name__
+    )
     def put(self, pk):
         user = auth.user
         wish = WishModel.query.filter_by(id=pk, owner_id=user.id, is_active=True)

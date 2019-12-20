@@ -1,10 +1,13 @@
-from sqlalchemy.dialects.postgresql import JSON
+from flask_restful_swagger import swagger
+
 from marshmallow import fields, Schema
+from sqlalchemy.dialects.postgresql import JSON
 
 from api.app import db, bcrypt
 from api.base.models import BaseModel, BaseSchema
 
 
+@swagger.model
 class UserModel(BaseModel, db.Model):
     """
     User Model

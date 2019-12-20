@@ -1,3 +1,5 @@
+from flask_restful_swagger import swagger
+
 from marshmallow import fields, Schema
 
 from api.base.models import BaseModel, BaseSchema
@@ -5,6 +7,7 @@ from api.base.models import BaseModel, BaseSchema
 from api.app import db
 
 
+@swagger.model
 class WishModel(BaseModel, db.Model):
     """
     Wish Model
