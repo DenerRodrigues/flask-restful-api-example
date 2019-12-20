@@ -15,4 +15,4 @@ BASE_URL = os.getenv('BASE_URL')
 
 AUTH_TOKEN_EXPIRATION = os.getenv('AUTH_TOKEN_EXPIRATION', 1800)
 
-SWAGGER_URL = os.getenv('AUTH_TOKEN_EXPIRATION', '/docs/spec')
+SWAGGER_URL = os.getenv('SWAGGER_URL', '/docs/spec')
