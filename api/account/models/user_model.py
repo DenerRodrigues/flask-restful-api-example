@@ -1,10 +1,10 @@
+from flask_restful import fields
 from flask_restful_swagger import swagger
 
-from marshmallow import fields, Schema
 from sqlalchemy.dialects.postgresql import JSON
 
 from api.app import db, bcrypt
-from api.base.models import BaseModel, BaseSchema
+from api.base.models import BaseModel
 
 
 @swagger.model
@@ -22,16 +22,15 @@ class UserModel(BaseModel, db.Model):
 
     wishes = db.relationship('WishModel', backref='users', lazy=True)
 
-    def __init__(self, **kwargs):
-        self.full_name = kwargs.get('full_name')
-        self.email = kwargs.get('email')
-        self.password = kwargs.get('password')
-        self.address = kwargs.get('address')
-        self.wishes = kwargs.get('wishes')
+    def __init__(self, full_name: str, email: str, password: str, address: dict):
+        self.full_name = full_name
+        self.email = email
+        self.password = password
+        self.address = address
         super(UserModel, self).__init__()
 
     def save(self):
-        self.password = self.__generate_hash(self.password)
+        self.password = self.__generate_password_hash(self.password)
         super(UserModel, self).save()
 
     def update(self, **kwargs):
@@ -52,13 +51,3 @@ class UserModel(BaseModel, db.Model):
 
     def __repr(self):
         return '<id {} - email {}>'.format(self.id, self.email)
-
-
-class UserSchema(BaseSchema, Schema):
-    """
-    User Schema
-    """
-    full_name = fields.Str(required=True)
-    email = fields.Email(required=True)
-    password = fields.Str(required=True, load_only=True)
-    address = fields.Dict(required=False)

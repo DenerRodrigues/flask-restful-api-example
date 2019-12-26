@@ -4,93 +4,74 @@ from flask_restful import Resource
 from flask_restful_swagger import swagger
 
 from marshmallow.exceptions import ValidationError
+from sqlalchemy.exc import IntegrityError
 
-from api.account.models.user_model import UserModel, UserSchema
+from api.account.views.docs.user_doc import SigInViewDoc, GetMeViewDoc
+from api.account.models.user_model import UserModel
+from api.account.schemas.user_schema import UserCreateSchema, UserListUpdateSchema
 from api.authentication.auth_token import BasicAuthToken
 from api.base.views import BaseView
+from api.base.utils import get_address_from_cep
 
 auth = BasicAuthToken()
-user_schema = UserSchema()
 
 
 class SigInView(BaseView, Resource):
-    @auth.login_required
-    @swagger.operation(
-        responseClass=UserModel.__name__,
-        parameters=[
-            {
-                "name": "fullname",
-                "description": "User fullname",
-                "required": True,
-                "allowMultiple": False,
-                "dataType": UserModel.__name__,
-                "paramType": "str"
-            },
-            {
-                "name": "email",
-                "description": "User e-mail",
-                "required": True,
-                "allowMultiple": False,
-                "dataType": UserModel.__name__,
-                "paramType": "str"
-            },
-            {
-                "name": "password",
-                "description": "User password",
-                "required": True,
-                "allowMultiple": False,
-                "dataType": UserModel.__name__,
-                "paramType": "str"
-            }
-        ],
-        responseMessages=[
-            {
-                "code": 201,
-                "message": "Created"
-            },
-            {
-                "code": 405,
-                "message": "Invalid input"
-            }
-        ]
-    )
+    schema = UserCreateSchema()
+    operation = SigInViewDoc()
+
+    @swagger.operation(**operation.post())
     def post(self):
         try:
-            data = user_schema.load(request.form)
+            data = self.schema.load(request.args)
         except ValidationError as e:
             return self.response(405, False, e.messages)
-        user = UserModel(**data)
-        user.save()
-        result = user_schema.dump(user)
+        try:
+            address = get_address_from_cep(data.get('cep_address'))
+        except Exception as e:
+            return self.response(405, False, e)
+
+        full_name = data.get('full_name')
+        email = data.get('email')
+        password = data.get('password')
+
+        user = UserModel(full_name, email, password, address)
+        try:
+            user.save()
+        except IntegrityError as e:
+            result = e._message().split('DETAIL:  ')[1].replace('\n', '')
+            return self.response(405, False, result)
+
+        result = self.schema.dump(user)
         return self.response(201, True, result)
 
 
 class GetMeView(BaseView, Resource):
-    @auth.login_required
-    @swagger.operation(
-        responseClass=UserModel.__name__
-    )
-    def get(self):
-        user = auth.user
-        result = user_schema.dump(user)
-        return self.response(200, True, result)
+    schema = UserListUpdateSchema()
+    operation = GetMeViewDoc()
 
     @auth.login_required
-    @swagger.operation(
-        responseClass=UserModel.__name__
-    )
+    @swagger.operation(**operation.get())
+    def get(self):
+        user = auth.user
+        data = self.schema.dump(user)
+        return self.response(200, True, data)
+
+    @auth.login_required
+    @swagger.operation(**operation.delete())
     def delete(self):
         user = auth.user
         user.delete()
         return self.response(204, True)
 
     @auth.login_required
-    @swagger.operation(
-        responseClass=UserModel.__name__
-    )
+    @swagger.operation(**operation.put())
     def put(self):
+        try:
+            data = self.schema.load(request.args)
+        except ValidationError as e:
+            return self.response(405, False, e.messages)
         user = auth.user
-        data = user_schema.load(request.form, partial=True)
         user.update(**data)
-        result = user_schema.dump(user)
+        result = self.schema.dump(user)
         return self.response(201, True, result)
