@@ -16,3 +16,7 @@ class UserListUpdateSchema(BaseSchema, Schema):
     email = fields.Email()
     cep_address = fields.Str(load_only=True)
     address = fields.Dict(dump_only=True)
+
+
+class UserChangePasswordSchema(BaseSchema, Schema):
+    password = fields.Str(required=True, load_only=True)

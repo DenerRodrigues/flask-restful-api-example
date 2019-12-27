@@ -1,4 +1,3 @@
-from flask_restful import fields
 from flask_restful_swagger import swagger
 
 from sqlalchemy.dialects.postgresql import JSON
@@ -34,9 +33,11 @@ class UserModel(BaseModel, db.Model):
         super(UserModel, self).save()
 
     def update(self, **kwargs):
-        if kwargs.get('password'):
-            kwargs['password'] = self.__generate_hash(kwargs.get('password'))
         super(UserModel, self).update(**kwargs)
+
+    def set_password(self, password):
+        password_hash = self.__generate_hash(password)
+        super(UserModel, self).update(**{'password': password_hash})
 
     @staticmethod
     def __generate_password_hash(password):

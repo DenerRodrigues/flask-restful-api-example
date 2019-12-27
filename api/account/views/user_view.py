@@ -6,9 +6,9 @@ from flask_restful_swagger import swagger
 from marshmallow.exceptions import ValidationError
 from sqlalchemy.exc import IntegrityError
 
-from api.account.views.docs.user_doc import SigInViewDoc, GetMeViewDoc
+from api.account.views.docs.user_doc import SigInViewDoc, GetMeViewDoc, UserChangePasswordViewDoc
 from api.account.models.user_model import UserModel
-from api.account.schemas.user_schema import UserCreateSchema, UserListUpdateSchema
+from api.account.schemas.user_schema import UserCreateSchema, UserListUpdateSchema, UserChangePasswordSchema
 from api.authentication.auth_token import BasicAuthToken
 from api.base.views import BaseView
 from api.base.utils import get_address_from_cep
@@ -75,3 +75,19 @@ class GetMeView(BaseView, Resource):
         user.update(**data)
         result = self.schema.dump(user)
         return self.response(201, True, result)
+
+
+class UserChangePasswordView(BaseView, Resource):
+    schema = UserChangePasswordSchema()
+    operation = UserChangePasswordViewDoc()
+
+    @auth.login_required
+    @swagger.operation(**operation.put())
+    def put(self):
+        try:
+            data = self.schema.load(request.args)
+        except ValidationError as e:
+            return self.response(405, False, e.messages)
+        user = auth.user
+        user.set_password(data.get('password'))
+        return self.response(204, True)

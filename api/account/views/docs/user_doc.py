@@ -88,3 +88,25 @@ class GetMeViewDoc:
         ]
 
         return dict(responseClass=self.response_class, parameters=parameters, responseMessages=response_messages)
+
+
+class UserChangePasswordViewDoc:
+    def __init__(self):
+        self.response_class = UserModel.__name__
+
+    def put(self):
+        parameters = [
+            dict(
+                name='password',
+                description='User password',
+                required=True,
+                dataType='str',
+                paramType='query'
+            ),
+        ]
+
+        response_messages = [
+            dict(code=204, message='Updated'),
+            dict(code=405, message='Invalid input')
+        ]
+        return dict(responseClass=self.response_class, parameters=parameters, responseMessages=response_messages)
