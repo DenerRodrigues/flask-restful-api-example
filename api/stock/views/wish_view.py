@@ -10,6 +10,7 @@ from api.authentication.auth_token import BasicAuthToken
 from api.base.views import BaseView
 from api.stock.models.wish_model import WishModel
 from api.stock.schemas.wish_schema import WishListCreateSchema, WishListUpdateSchema
+from api.stock.views.docs.wish_doc import WishViewDoc, WishListCreateViewDoc
 
 
 auth = BasicAuthToken()
@@ -17,8 +18,9 @@ auth = BasicAuthToken()
 
 class WishListCreateView(BaseView, Resource):
     schema = WishListCreateSchema()
+    operation = WishListCreateViewDoc()
 
-    @swagger.operation()
+    @swagger.operation(**operation.post())
     @auth.login_required
     def post(self):
         try:
@@ -42,7 +44,7 @@ class WishListCreateView(BaseView, Resource):
         return self.response(201, True, result)
 
     @auth.login_required
-    @swagger.operation()
+    @swagger.operation(**operation.get())
     def get(self):
         try:
             data = self.schema.load(request.args)
@@ -61,9 +63,10 @@ class WishListCreateView(BaseView, Resource):
 
 class WishView(BaseView, Resource):
     schema = WishListUpdateSchema()
+    operation = WishViewDoc()
 
     @auth.login_required
-    @swagger.operation()
+    @swagger.operation(**operation.get())
     def get(self, pk):
         user = auth.user
         wish = WishModel.query.filter_by(id=pk, owner_id=user.id, is_active=True)
@@ -73,9 +76,7 @@ class WishView(BaseView, Resource):
         return self.response(200, True, result)
 
     @auth.login_required
-    @swagger.operation(
-        responseClass=WishModel.__name__
-    )
+    @swagger.operation(**operation.delete())
     def delete(self, pk):
         user = auth.user
         wish = WishModel.query.filter_by(id=pk, owner_id=user.id, is_active=True)
@@ -86,7 +87,7 @@ class WishView(BaseView, Resource):
         return self.response(204, True)
 
     @auth.login_required
-    @swagger.operation()
+    @swagger.operation(**operation.put())
     def put(self, pk):
         user = auth.user
         wish = WishModel.query.filter_by(id=pk, owner_id=user.id, is_active=True)
