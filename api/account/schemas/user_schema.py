@@ -18,5 +18,5 @@ class UserListUpdateSchema(BaseSchema, Schema):
     address = fields.Dict(dump_only=True)
 
 
-class UserChangePasswordSchema(BaseSchema, Schema):
+class UserChangePasswordSchema(Schema):
     password = fields.Str(required=True, load_only=True)

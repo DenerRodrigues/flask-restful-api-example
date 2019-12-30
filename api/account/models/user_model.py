@@ -50,5 +50,5 @@ class UserModel(BaseModel, db.Model):
     def first_name(self):
         return self.full_name.split(' ')[0] if self.full_name else ''
 
-    def __repr(self):
-        return '<id {} - email {}>'.format(self.id, self.email)
+    def __str__(self):
+        return '<{} - {}>'.format(self.full_name, self.email)
