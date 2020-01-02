@@ -7,10 +7,10 @@ from api.authentication.auth_token import BasicAuthToken
 auth = BasicAuthToken()
 
 
-class GetAuthTokenView(BaseView, Resource):
+class AuthTokenView(BaseView, Resource):
     @auth.login_required
     @swagger.operation()
-    def get(self):
+    def post(self):
         token = auth.generate_auth_token()
         result = {'token': token.decode('ascii')}
-        return self.response(200, True, result)
+        return self.response(201, True, result)

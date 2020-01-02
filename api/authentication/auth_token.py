@@ -17,7 +17,7 @@ class BasicAuthToken(HTTPBasicAuth):
             self.user = self.verify_auth_token(auth.get('token'))
         elif auth and auth.get('username') and auth.get('password'):
             self.user = UserModel.query.filter_by(email=auth.get('username'), is_active=True).one_or_none()
-            if not self.user.check_password_hash(auth.get('password')):
+            if self.user and not self.user.check_password_hash(auth.get('password')):
                 # invalid password
                 return None
         return self.user
