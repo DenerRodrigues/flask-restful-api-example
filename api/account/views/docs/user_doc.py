@@ -1,7 +1,7 @@
 from api.account.models.user_model import UserModel
 
 
-class SigInViewDoc:
+class SignUpViewDoc:
     def __init__(self):
         self.response_class = UserModel.__name__
 

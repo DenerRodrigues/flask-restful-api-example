@@ -6,7 +6,7 @@ from flask_restful_swagger import swagger
 from marshmallow.exceptions import ValidationError
 from sqlalchemy.exc import IntegrityError
 
-from api.account.views.docs.user_doc import SigInViewDoc, GetMeViewDoc, UserChangePasswordViewDoc
+from api.account.views.docs.user_doc import SignUpViewDoc, GetMeViewDoc, UserChangePasswordViewDoc
 from api.account.models.user_model import UserModel
 from api.account.schemas.user_schema import UserCreateSchema, UserListUpdateSchema, UserChangePasswordSchema
 from api.authentication.auth_token import BasicAuthToken
@@ -16,9 +16,9 @@ from api.base.utils import get_address_from_cep
 auth = BasicAuthToken()
 
 
-class SigInView(BaseView, Resource):
+class SignUpView(BaseView, Resource):
     schema = UserCreateSchema()
-    operation = SigInViewDoc()
+    operation = SignUpViewDoc()
 
     @swagger.operation(**operation.post())
     def post(self):
