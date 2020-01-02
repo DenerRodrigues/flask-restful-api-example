@@ -1,5 +1,5 @@
 from api.app import api
-from api.stock.views import wish_view
+from api.stock.views import wish_views
 
-api.add_resource(wish_view.WishListCreateView, '/wish/')
-api.add_resource(wish_view.WishView, '/wish/<pk>/')
+api.add_resource(wish_views.WishListCreateView, '/wish/')
+api.add_resource(wish_views.WishView, '/wish/<pk>/')

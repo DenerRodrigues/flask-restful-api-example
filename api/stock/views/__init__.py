@@ -1,2 +1,2 @@
-from . import wish_view
+from . import wish_views
 from . import urls
