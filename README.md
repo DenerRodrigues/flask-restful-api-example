@@ -1,5 +1,5 @@
 # flask-restful-api-example
-Python Restful API example using Flask and PostgreSQL
+[Python](https://www.python.org) Restful API example using [Flask](https://flask.palletsprojects.com) and [PostgreSQL](https://www.postgresql.org)
 
 
 Quickstart
