@@ -53,12 +53,12 @@ class WishListCreateView(BaseView, Resource):
             return self.response(405, False, e.messages)
 
         owner_id = auth.user.id
-        wishes = WishModel.query.filter_by(owner_id=owner_id, is_active=True).all()
+        wishes = WishModel.query.filter_by(owner_id=owner_id, is_active=True)
 
         if data.get('name'):
             wishes = wishes.filter(WishModel.name.ilike('%{}%'.format(data.get('name'))))
 
-        result = self.list_schema.dump(wishes, many=True)
+        result = self.list_schema.dump(wishes.all(), many=True)
         return self.response(200, True, result)
 
 
@@ -84,18 +84,22 @@ class WishView(BaseView, Resource):
         if not wish:
             return self.not_found()
 
-        user.delete()
+        wish.delete()
         return self.response(204, True)
 
     @auth.login_required
     @swagger.operation(**operation.put())
     def put(self, pk):
+        try:
+            data = self.schema.load(request.json)
+        except ValidationError as e:
+            return self.response(405, False, e.messages)
+
         user = auth.user
         wish = WishModel.query.filter_by(id=pk, owner_id=user.id, is_active=True).one_or_none()
         if not wish:
             return self.not_found()
 
-        data = self.schema.load(request.args, partial=True)
         wish.update(**data)
         result = self.schema.dump(wish)
         return self.response(201, True, result)

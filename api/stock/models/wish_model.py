@@ -15,6 +15,7 @@ class WishModel(BaseModel, db.Model):
     """
 
     __tablename__ = 'wishes'
+    __table_args__ = (db.UniqueConstraint('name', 'owner_id'),)
 
     name = db.Column(db.String(128), nullable=False)
     price = db.Column(db.Numeric, nullable=False)
@@ -24,7 +25,7 @@ class WishModel(BaseModel, db.Model):
 
     def __init__(self, name: str, price: Decimal, owner_id: int, description: str = None):
         self.name = name
-        self.price = price
+        self.price = abs(price)
         self.owner_id = owner_id
         self.description = description
         super(WishModel, self).__init__()
