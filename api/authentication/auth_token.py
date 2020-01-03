@@ -40,5 +40,5 @@ class BasicAuthToken(HTTPBasicAuth):
         except BadSignature:
             # invalid token
             return None
-        self.user = UserModel.query.get(data.get('id'))
+        self.user = UserModel.query.filter_by(id=data.get('id'), is_active=True).one_or_none()
         return self.user
