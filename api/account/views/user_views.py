@@ -23,7 +23,7 @@ class SignUpView(BaseView, Resource):
     @swagger.operation(**operation.post())
     def post(self):
         try:
-            data = self.schema.load(request.args)
+            data = self.schema.load(request.json)
         except ValidationError as e:
             return self.response(405, False, e.messages)
         try:
@@ -71,6 +71,11 @@ class GetMeView(BaseView, Resource):
             data = self.schema.load(request.args)
         except ValidationError as e:
             return self.response(405, False, e.messages)
+        try:
+            data['address'] = get_address_from_cep(data.get('cep_address'))
+        except Exception as e:
+            return self.response(405, False, str(e))
+
         user = auth.user
         user.update(**data)
         result = self.schema.dump(user)
