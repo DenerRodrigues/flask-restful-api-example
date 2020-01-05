@@ -19,4 +19,5 @@ class UserListUpdateSchema(BaseSchema, Schema):
 
 
 class UserChangePasswordSchema(Schema):
-    password = fields.Str(required=True, load_only=True)
+    old_password = fields.Str(required=True, load_only=True)
+    new_password = fields.Str(required=True, load_only=True)

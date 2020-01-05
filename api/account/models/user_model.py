@@ -36,7 +36,7 @@ class UserModel(BaseModel, db.Model):
         super(UserModel, self).update(**kwargs)
 
     def set_password(self, password):
-        password_hash = self.__generate_hash(password)
+        password_hash = self.__generate_password_hash(password)
         super(UserModel, self).update(**{'password': password_hash})
 
     @staticmethod

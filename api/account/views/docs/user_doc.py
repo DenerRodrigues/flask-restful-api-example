@@ -60,26 +60,12 @@ class GetMeViewDoc:
     def put(self):
         parameters = [
             dict(
-                name='fullname',
-                description='User fullname',
-                required=False,
-                dataType='str',
-                paramType='query'
+                name='data',
+                description='Update User',
+                dataType=self.response_class,
+                paramType='body',
             ),
-            dict(
-                name='email',
-                description='User e-mail',
-                required=False,
-                dataType='str',
-                paramType='query'
-            ),
-            dict(
-                name='cep_address',
-                description='User CEP address',
-                required=False,
-                dataType='str',
-                paramType='query'
-            ),
+
         ]
 
         response_messages = [
