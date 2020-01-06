@@ -2,9 +2,7 @@ from decimal import Decimal
 
 from flask_restful_swagger import swagger
 
-from marshmallow import fields, Schema
-
-from api.base.models import BaseModel, BaseSchema
+from api.base.models import BaseModel
 from api.app import db
 
 
@@ -15,7 +13,7 @@ class WishModel(BaseModel, db.Model):
     """
 
     __tablename__ = 'wishes'
-    __table_args__ = (db.UniqueConstraint('name', 'owner_id'),)
+    __table_args__ = (db.UniqueConstraint('name', 'owner_id', 'is_active'),)
 
     name = db.Column(db.String(128), nullable=False)
     price = db.Column(db.Numeric, nullable=False)
