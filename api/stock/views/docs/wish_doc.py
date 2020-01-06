@@ -1,32 +1,27 @@
+from decimal import Decimal
+
+from flask_restful_swagger import swagger
+
 from api.stock.models.wish_model import WishModel
 
 
-class WishListCreateViewDoc:
-    def __init__(self):
-        self.response_class = WishModel.__name__
+@swagger.model
+class WishCreateUpdateModel(WishModel):
+    def __init__(self, name: str, price: Decimal, description: str = None):
+        self.name = name
+        self.price = abs(price)
+        self.description = description
 
-    def post(self):
+
+class WishListCreateViewDoc:
+    @staticmethod
+    def post():
         parameters = [
             dict(
-                name='name',
-                description='Wish name',
-                required=True,
-                dataType='str',
-                paramType='query'
-            ),
-            dict(
-                name='price',
-                description='Wish price',
-                required=True,
-                dataType='decimal',
-                paramType='query',
-            ),
-            dict(
-                name='description',
-                description='Wish description',
-                required=False,
-                dataType='str',
-                paramType='query',
+                name='data',
+                description='Create Wish',
+                dataType=WishCreateUpdateModel.__name__,
+                paramType='body',
             ),
         ]
 
@@ -35,56 +30,66 @@ class WishListCreateViewDoc:
             dict(code=405, message='Invalid input')
         ]
 
-        return dict(responseClass=self.response_class, parameters=parameters, responseMessages=response_messages)
+        return dict(responseClass=WishCreateUpdateModel.__name__, parameters=parameters, responseMessages=response_messages)
 
-    def get(self):
+    @staticmethod
+    def get():
         parameters = [
             dict(
                 name='name',
-                description='Wish name',
-                required=False,
+                description='Filter by name',
                 dataType='str',
-                paramType='query'
+                paramType='query',
             ),
         ]
         response_messages = [dict(code=200, message='Success')]
-        return dict(responseClass=self.response_class, parameters=parameters, responseMessages=response_messages)
+        return dict(parameters=parameters, responseMessages=response_messages)
 
 
 class WishViewDoc:
-    def __init__(self):
-        self.response_class = WishModel.__name__
-
-    def get(self):
-        response_messages = [dict(code=200, message='Success')]
-        return dict(responseClass=self.response_class, responseMessages=response_messages)
-
-    def delete(self):
-        response_messages = [dict(code=204, message='Deleted')]
-        return dict(responseClass=self.response_class, responseMessages=response_messages)
-
-    def put(self):
+    @staticmethod
+    def get():
         parameters = [
             dict(
-                name='name',
-                description='Wish name',
+                name='pk',
+                description='Wish id',
+                dataType='int',
+                paramType='path',
                 required=True,
-                dataType='str',
-                paramType='query'
+            ),
+        ]
+        response_messages = [dict(code=200, message='Success')]
+        return dict(parameters=parameters, responseMessages=response_messages)
+
+    @staticmethod
+    def delete():
+        parameters = [
+            dict(
+                name='pk',
+                description='Wish id',
+                dataType='int',
+                paramType='path',
+                required=True,
+            ),
+        ]
+        response_messages = [dict(code=204, message='Deleted')]
+        return dict(parameters=parameters, responseMessages=response_messages)
+
+    @staticmethod
+    def put():
+        parameters = [
+            dict(
+                name='pk',
+                description='Wish id',
+                dataType='int',
+                paramType='path',
+                required=True
             ),
             dict(
-                name='price',
-                description='Wish price',
-                required=True,
-                dataType='decimal',
-                paramType='query',
-            ),
-            dict(
-                name='description',
-                description='Wish description',
-                required=False,
-                dataType='str',
-                paramType='query',
+                name='data',
+                description='Create Wish',
+                dataType=WishCreateUpdateModel.__name__,
+                paramType='body',
             ),
         ]
 
@@ -93,4 +98,4 @@ class WishViewDoc:
             dict(code=405, message='Invalid input')
         ]
 
-        return dict(responseClass=self.response_class, parameters=parameters, responseMessages=response_messages)
+        return dict(responseClass=WishCreateUpdateModel.__name__, parameters=parameters, responseMessages=response_messages)

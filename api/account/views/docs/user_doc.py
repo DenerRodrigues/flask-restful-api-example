@@ -1,39 +1,34 @@
+from flask_restful_swagger import swagger
+
 from api.account.models.user_model import UserModel
 
 
-class SignUpViewDoc:
-    def __init__(self):
-        self.response_class = UserModel.__name__
+@swagger.model
+class UserCreateModel(UserModel):
+    def __init__(self, full_name: str, email: str, password : str, cep_address: dict):
+        self.full_name = full_name
+        self.email = email
+        self.password = password
+        self.cep_address = cep_address
 
-    def post(self):
+
+@swagger.model
+class UserUpdateModel(UserModel):
+    def __init__(self, full_name: str, email: str, cep_address: dict):
+        self.full_name = full_name
+        self.email = email
+        self.cep_address = cep_address
+
+
+class SignUpViewDoc:
+    @staticmethod
+    def post():
         parameters = [
             dict(
-                name='full_name',
-                description='User fullname',
-                required=True,
-                dataType='str',
-                paramType='query'
-            ),
-            dict(
-                name='email',
-                description='User e-mail',
-                required=True,
-                dataType='str',
-                paramType='query',
-            ),
-            dict(
-                name='password',
-                description='User password',
-                required=True,
-                dataType='str',
-                paramType='query',
-            ),
-            dict(
-                name='cep_address',
-                description='User CEP address',
-                required=True,
-                dataType='str',
-                paramType='query'
+                name='data',
+                description='Create User',
+                dataType=UserCreateModel.__name__,
+                paramType='body',
             ),
         ]
 
@@ -42,30 +37,29 @@ class SignUpViewDoc:
             dict(code=405, message='Invalid input')
         ]
 
-        return dict(responseClass=self.response_class, parameters=parameters, responseMessages=response_messages)
+        return dict(responseClass=UserCreateModel.__name__, parameters=parameters, responseMessages=response_messages)
 
 
 class GetMeViewDoc:
-    def __init__(self):
-        self.response_class = UserModel.__name__
-
-    def get(self):
+    @staticmethod
+    def get():
         response_messages = [dict(code=200, message='Success')]
-        return dict(responseClass=self.response_class, responseMessages=response_messages)
+        return dict(responseMessages=response_messages)
 
-    def delete(self):
+    @staticmethod
+    def delete():
         response_messages = [dict(code=204, message='Deleted')]
-        return dict(responseClass=self.response_class, responseMessages=response_messages)
+        return dict(responseMessages=response_messages)
 
-    def put(self):
+    @staticmethod
+    def put():
         parameters = [
             dict(
                 name='data',
                 description='Update User',
-                dataType=self.response_class,
+                dataType=UserUpdateModel.__name__,
                 paramType='body',
             ),
-
         ]
 
         response_messages = [
@@ -73,21 +67,28 @@ class GetMeViewDoc:
             dict(code=405, message='Invalid input')
         ]
 
-        return dict(responseClass=self.response_class, parameters=parameters, responseMessages=response_messages)
+        return dict(responseClass=UserUpdateModel.__name__, parameters=parameters, responseMessages=response_messages)
+
+
+@swagger.model
+class UserChangePasswordModelDoc(UserModel):
+    def __init__(self, old_password: str, new_password: str):
+        self.old_password = old_password
+        self.new_password = new_password
 
 
 class UserChangePasswordViewDoc:
     def __init__(self):
-        self.response_class = UserModel.__name__
+        self.response_class = UserChangePasswordModelDoc.__name__
 
     def put(self):
         parameters = [
             dict(
-                name='password',
+                name='data',
                 description='User password',
                 required=True,
-                dataType='str',
-                paramType='query'
+                dataType=self.response_class,
+                paramType='body'
             ),
         ]
 
