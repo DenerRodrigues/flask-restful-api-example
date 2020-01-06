@@ -2,10 +2,10 @@ from flask_restful import Resource
 from flask_restful_swagger import swagger
 
 from api.base.views import BaseView
-from api.authentication.auth_token import BasicAuthToken
+from api.authentication.auth_token import AuthToken
 from api.authentication.docs import AuthTokenViewDoc
 
-auth = BasicAuthToken()
+auth = AuthToken()
 
 
 class AuthTokenView(BaseView, Resource):

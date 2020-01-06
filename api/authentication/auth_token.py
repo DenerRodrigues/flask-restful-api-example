@@ -1,16 +1,24 @@
 from itsdangerous import BadSignature, SignatureExpired
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
+from flask import request
 from flask_httpauth import HTTPBasicAuth
 
 from api.app import app
 from api.account.models.user_model import UserModel
 
 
-class BasicAuthToken(HTTPBasicAuth):
+class AuthToken(HTTPBasicAuth):
     def __init__(self, user=None):
-        super(BasicAuthToken, self).__init__()
+        super(AuthToken, self).__init__()
         self.user = user
+
+    def get_auth(self):
+        if request.authorization:
+            self.scheme = 'Basic'
+        else:
+            self.scheme = 'Bearer'
+        return super(AuthToken, self).get_auth()
 
     def authenticate(self, auth, stored_password=None):
         if auth and auth.get('token'):

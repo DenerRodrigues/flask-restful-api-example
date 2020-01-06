@@ -6,14 +6,14 @@ from flask_restful_swagger import swagger
 from marshmallow.exceptions import ValidationError
 from sqlalchemy.exc import IntegrityError
 
-from api.authentication.auth_token import BasicAuthToken
+from api.authentication.auth_token import AuthToken
 from api.base.views import BaseView
 from api.stock.models.wish_model import WishModel
 from api.stock.schemas.wish_schema import WishCreateSchema, WishListUpdateSchema
 from api.stock.views.docs.wish_doc import WishViewDoc, WishListCreateViewDoc
 
 
-auth = BasicAuthToken()
+auth = AuthToken()
 
 
 class WishListCreateView(BaseView, Resource):

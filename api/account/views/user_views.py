@@ -9,11 +9,11 @@ from sqlalchemy.exc import IntegrityError
 from api.account.views.docs.user_doc import SignUpViewDoc, GetMeViewDoc, UserChangePasswordViewDoc
 from api.account.models.user_model import UserModel
 from api.account.schemas.user_schema import UserCreateSchema, UserListUpdateSchema, UserChangePasswordSchema
-from api.authentication.auth_token import BasicAuthToken
+from api.authentication.auth_token import AuthToken
 from api.base.views import BaseView
 from api.base.utils import get_address_from_cep
 
-auth = BasicAuthToken()
+auth = AuthToken()
 
 
 class SignUpView(BaseView, Resource):
