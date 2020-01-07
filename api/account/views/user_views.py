@@ -23,7 +23,7 @@ class SignUpView(BaseView, Resource):
     @swagger.operation(**operation.post())
     def post(self):
         try:
-            data = self.schema.load(request.json or request.args)
+            data = self.schema.load(request.json or request.form or request.args)
         except ValidationError as e:
             return self.response(405, False, e.messages)
         try:
@@ -68,7 +68,7 @@ class GetMeView(BaseView, Resource):
     @swagger.operation(**operation.put())
     def put(self):
         try:
-            data = self.schema.load(request.args or request.json)
+            data = self.schema.load(request.json or request.form or request.args)
         except ValidationError as e:
             return self.response(405, False, e.messages)
         try:
@@ -90,7 +90,7 @@ class UserChangePasswordView(BaseView, Resource):
     @swagger.operation(**operation.put())
     def put(self):
         try:
-            data = self.schema.load(request.args or request.json)
+            data = self.schema.load(request.json or request.form or request.args)
         except ValidationError as e:
             return self.response(405, False, e.messages)
         user = auth.user

@@ -25,7 +25,7 @@ class WishListCreateView(BaseView, Resource):
     @auth.login_required
     def post(self):
         try:
-            data = self.create_schema.load(request.args or request.json)
+            data = self.create_schema.load(request.json or request.form or request.args)
         except ValidationError as e:
             return self.response(405, False, e.messages)
 
@@ -48,7 +48,7 @@ class WishListCreateView(BaseView, Resource):
     @swagger.operation(**operation.get())
     def get(self):
         try:
-            data = self.list_schema.load(request.args)
+            data = self.list_schema.load(request.json or request.form or request.args)
         except ValidationError as e:
             return self.response(405, False, e.messages)
 
@@ -91,7 +91,7 @@ class WishView(BaseView, Resource):
     @swagger.operation(**operation.put())
     def put(self, pk):
         try:
-            data = self.schema.load(request.args or request.json)
+            data = self.schema.load(request.json or request.form or request.args)
         except ValidationError as e:
             return self.response(405, False, e.messages)
 
