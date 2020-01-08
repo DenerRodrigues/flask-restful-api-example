@@ -1,5 +1,3 @@
-from decimal import Decimal
-
 from flask_restful_swagger import swagger
 
 from api.base.models import BaseModel
@@ -21,7 +19,7 @@ class WishModel(BaseModel, db.Model):
 
     owner_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
-    def __init__(self, name: str, price: Decimal, owner_id: int, description: str = None):
+    def __init__(self, name: str, price: float, owner_id: int, description: str = None):
         self.name = name
         self.price = abs(price)
         self.owner_id = owner_id
